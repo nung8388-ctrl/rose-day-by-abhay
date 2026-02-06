@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Happy Rose Day 💖</title>
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: white;
+  font-family: Arial;
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Main Text */
+h1 {
+  margin-top: 120px;
+  font-size: 36px;
+  color: red;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px red; }
+  to { text-shadow: 0 0 25px pink; }
+}
+
+/* Button */
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 18px;
+  border: none;
+  border-radius: 30px;
+  background: red;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 15px red;
+}
+
+/* Popup Box */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+.popup-box {
+  background: #111;
+  padding: 25px;
+  border-radius: 15px;
+  border: 2px solid red;
+  box-shadow: 0 0 20px red;
+  font-size: 20px;
+  color: pink;
+  max-width: 320px;
+}
+
+/* Rose Animation */
+.rose {
+  position: absolute;
+  top: -50px;
+  font-size: 25px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh);
+  }
+}
+</style>
+</head>
+<body>
+
+<h1 id="text"></h1>
+<button onclick="showPopup()">Click My Miss ❤️</button>
+
+<div class="popup" id="popup">
+  <div class="popup-box">
+    🌹 Happy Rose Day My Miss 🌹<br><br>
+    Pata hai ki tum humse pyar nahi karti,<br>
+    par hum tumse pyar karte hain…<br><br>
+    Shayad bhagwan ne aisa hi likha hai…<br><br>
+    Tumhe koi pasand na kare,<br>
+    lekin main karta hoon…<br><br>
+    Aur karta rahunga ❤️<br><br>
+    <button onclick="closePopup()">Close 💖</button>
+  </div>
+</div>
+
+<script>
+// Typing Effect
+let msg = "🌹 Happy Rose Day My Miss 🌹";
+let i = 0;
+function type() {
+  if (i < msg.length) {
+    document.getElementById("text").innerHTML += msg.charAt(i);
+    i++;
+    setTimeout(type, 100);
+  }
+}
+type();
+
+// Popup
+function showPopup() {
+  document.getElementById("popup").style.visibility = "visible";
+}
+function closePopup() {
+  document.getElementById("popup").style.visibility = "hidden";
+}
+
+// Falling Roses
+for (let i = 0; i < 25; i++) {
+  let rose = document.createElement("div");
+  rose.className = "rose";
+  rose.innerHTML = "🌹";
+  rose.style.left = Math.random() * 100 + "vw";
+  rose.style.animationDuration = 3 + Math.random() * 5 + "s";
+  document.body.appendChild(rose);
+}
+</script>
+
+</body>
+</html>
