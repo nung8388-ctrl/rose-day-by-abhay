@@ -12,7 +12,7 @@ body{
   font-family:Arial;
   color:white;
   text-align:center;
-  background:linear-gradient(270deg,#000000,#1a0000,#000000);
+  background:linear-gradient(270deg,#000,#1a0000,#000);
   background-size:600% 600%;
   animation:bgMove 12s infinite;
 }
@@ -66,25 +66,17 @@ h1{
   height:45%;
   overflow:hidden;
 }
-
 .boy,.girl{
   position:absolute;
   bottom:0;
   font-size:110px;
   filter:brightness(0) drop-shadow(0 0 20px black);
 }
-
-/* Girl fixed */
-.girl{
-  right:20%;
-}
-
-/* Boy walking */
+.girl{ right:20%; }
 .boy{
   left:-150px;
   animation:walk 6s linear forwards;
 }
-
 @keyframes walk{
   0%{left:-150px;}
   60%{left:45%;}
@@ -114,9 +106,9 @@ h1{
   <p id="error" style="color:red;"></p>
 </div>
 
-<!-- MUSIC -->
-<audio id="bgMusic" loop>
-  <source src="music.mp3" type="audio/mpeg">
+<!-- 🎵 MUSIC (Your file = song.mp3) -->
+<audio id="bgMusic" loop preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
 </audio>
 
 <!-- MESSAGE -->
@@ -131,11 +123,27 @@ h1{
 <script>
 /* PASSWORD */
 var password="rose";
+
 function unlock(){
   var p=document.getElementById("pass").value;
   if(p===password){
     document.getElementById("lockScreen").style.display="none";
-    document.getElementById("bgMusic").play().catch(()=>{});
+
+    // FORCE MUSIC PLAY (Mobile Fix)
+    var music=document.getElementById("bgMusic");
+    music.volume=1;
+    music.currentTime=0;
+
+    var playPromise=music.play();
+    if(playPromise!==undefined){
+      playPromise.then(()=>{})
+      .catch(()=>{
+        document.body.addEventListener("click",function(){
+          music.play();
+        },{once:true});
+      });
+    }
+
   }else{
     document.getElementById("error").innerText="Wrong Password!";
   }
@@ -146,6 +154,7 @@ var msg=`HAPPY ROSE DAY MY MISS 🌹
 Tum mujhe pyaar karo ya na karo,
 par mera pyaar sirf tumse tha, tumse hai,
 aur hamesha tumse hi rahega…`;
+
 var i=0;
 function type(){
   if(i<msg.length){
