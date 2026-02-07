@@ -8,19 +8,36 @@
 <style>
 body {
   margin: 0;
-  background: radial-gradient(circle, #000, #330000);
-  color: white;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   overflow: hidden;
   text-align: center;
+  color: white;
+
+  /* Colorful Gradient Background */
+  background: linear-gradient(135deg, #ff4e50, #ff6a00, #ff00cc, #3333ff);
+  background-size: 400% 400%;
+  animation: bgMove 12s infinite alternate;
+}
+
+/* Gradient moving animation */
+@keyframes bgMove {
+  0% {background-position: left;}
+  100% {background-position: right;}
+}
+
+/* Dark overlay for depth */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
 }
 
 /* Lock Screen */
 #lockScreen {
   position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
+  inset: 0;
+  background: linear-gradient(45deg, #000, #330000, #000);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,167 +46,110 @@ body {
 }
 
 #lockScreen input {
-  padding: 10px;
+  padding: 12px;
   font-size: 18px;
-  border-radius: 20px;
+  border-radius: 25px;
   border: none;
   text-align: center;
+  outline: none;
 }
 
 #lockScreen button {
-  margin-top: 10px;
-  padding: 8px 20px;
+  margin-top: 12px;
+  padding: 10px 25px;
   border: none;
-  border-radius: 20px;
-  background: red;
+  border-radius: 25px;
+  background: linear-gradient(45deg, red, pink);
   color: white;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 10px red;
 }
 
-/* Title */
-h1 {
-  margin-top: 120px;
-  font-size: 38px;
-  color: red;
-  animation: glow 2s infinite alternate, zoom 3s infinite;
+/* Message */
+.message {
+  position: relative;
+  top: 120px;
+  padding: 20px;
+  font-size: 34px;
+  font-weight: bold;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #ff4da6,
+    0 0 20px #ff1a75,
+    0 0 40px #ff0066;
 }
 
-@keyframes glow {
-  from { text-shadow: 0 0 10px red; }
-  to { text-shadow: 0 0 30px pink; }
-}
-
-@keyframes zoom {
-  50% { transform: scale(1.1); }
-}
-
-/* Button */
-button.mainBtn {
-  margin-top: 20px;
-  padding: 12px 28px;
-  font-size: 18px;
-  border: none;
-  border-radius: 30px;
-  background: red;
-  color: white;
-  box-shadow: 0 0 20px red;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  50% { transform: scale(1.08); }
-}
-
-/* Popup */
-.popup {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  visibility: hidden;
-}
-
-.popup-box {
-  background: #111;
-  padding: 25px;
-  border-radius: 15px;
-  border: 2px solid red;
-  box-shadow: 0 0 25px red;
-  color: pink;
-}
-
-/* 🌹 Roses */
+/* Falling Roses */
 .rose {
-  position: absolute;
+  position: fixed;
   top: -50px;
-  animation: fall linear infinite, swing ease-in-out infinite;
+  font-size: 24px;
+  animation: fall linear infinite;
+  filter: drop-shadow(0 0 6px red);
 }
 
 @keyframes fall {
-  to { transform: translateY(110vh) rotate(360deg); }
-}
-
-@keyframes swing {
-  50% { margin-left: 40px; }
+  to {
+    transform: translateY(110vh);
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🎵 Background Music -->
-<audio id="bgMusic" loop>
-  <source src="song.mp3" type="audio/mpeg">
-</audio>
-
 <!-- Lock Screen -->
 <div id="lockScreen">
-  <h2>🔒 Enter Password</h2>
-  <input type="password" id="pass" placeholder="Enter Code">
-  <button onclick="unlock()">Unlock</button>
-  <p id="error" style="color:red;"></p>
+  <h2 style="color:white;text-shadow:0 0 10px red;">Enter Password 🔒</h2>
+  <input type="password" id="pass" placeholder="Password">
+  <button onclick="unlock()">Open</button>
 </div>
 
-<h1 id="text"></h1>
-<button class="mainBtn" onclick="showPopup()">Click My Miss</button>
+<!-- Music -->
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mp3">
+</audio>
 
-<!-- Popup -->
-<div class="popup" id="popup">
-  <div class="popup-box">
-    🌹 Happy Rose Day My Miss 🌹<br><br>
-    Tumhe koi pasand na kare,<br>
-    lekin main karta hoon…<br><br>
-    Aur karta rahunga 🌹<br><br>
-    <button onclick="closePopup()">Close</button>
-  </div>
+<!-- Message -->
+<div class="message">
+  HAPPY ROSE DAY MY MISS 🌹<br><br>
+  Tum mujhe pyaar karo ya na karo,<br>
+  par mera pyaar sirf tumse tha, tumse hai,<br>
+  aur hamesha tumse hi rahega…
 </div>
 
 <script>
-/* Unlock + Music */
+/* Password */
 function unlock() {
-  let p = document.getElementById("pass").value;
-  if (p === "2008") {
+  var password = "rose";   // Change password here
+
+  if (document.getElementById("pass").value === password) {
     document.getElementById("lockScreen").style.display = "none";
-
-    let music = document.getElementById("bgMusic");
-    music.play().catch(()=>{});   // music start after password
+    document.getElementById("music").play();
   } else {
-    document.getElementById("error").innerText = "Wrong Password!";
+    alert("Wrong Password ❌");
   }
 }
 
-/* Typing Effect */
-let msg = "🌹 Happy Rose Day My Miss 🌹";
-let i = 0;
-function type() {
-  if (i < msg.length) {
-    document.getElementById("text").innerHTML += msg.charAt(i);
-    i++;
-    setTimeout(type, 100);
-  }
-}
-type();
-
-/* Popup */
-function showPopup() {
-  document.getElementById("popup").style.visibility = "visible";
-}
-function closePopup() {
-  document.getElementById("popup").style.visibility = "hidden";
-}
-
-/* 🌹 Roses Rain */
-for (let i = 0; i < 50; i++) {
+/* Falling Roses */
+function createRose() {
   let rose = document.createElement("div");
   rose.className = "rose";
   rose.innerHTML = "🌹";
+
   rose.style.left = Math.random() * 100 + "vw";
-  rose.style.fontSize = 18 + Math.random() * 25 + "px";
-  rose.style.animationDuration = 6 + Math.random() * 8 + "s";
+  rose.style.animationDuration = (3 + Math.random() * 5) + "s";
+  rose.style.fontSize = (18 + Math.random() * 22) + "px";
+
   document.body.appendChild(rose);
+
+  setTimeout(() => {
+    rose.remove();
+  }, 8000);
 }
+
+setInterval(createRose, 250);
 </script>
 
 </body>
