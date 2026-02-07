@@ -1,155 +1,171 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>Happy Rose Day 🌹</title>
+<meta charset="UTF-8">
+<title>Happy Rose Day</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
-  text-align: center;
-  color: white;
-
-  /* Colorful Gradient Background */
-  background: linear-gradient(135deg, #ff4e50, #ff6a00, #ff00cc, #3333ff);
-  background-size: 400% 400%;
-  animation: bgMove 12s infinite alternate;
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Arial;
+  color:white;
+  text-align:center;
+  background:linear-gradient(270deg,#000000,#1a0000,#000000);
+  background-size:600% 600%;
+  animation:bgMove 12s infinite;
 }
-
-/* Gradient moving animation */
-@keyframes bgMove {
-  0% {background-position: left;}
-  100% {background-position: right;}
-}
-
-/* Dark overlay for depth */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
 /* Lock Screen */
-#lockScreen {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(45deg, #000, #330000, #000);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+#lockScreen{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
 }
-
-#lockScreen input {
-  padding: 12px;
-  font-size: 18px;
-  border-radius: 25px;
-  border: none;
-  text-align: center;
-  outline: none;
+#lockScreen input{
+  padding:12px;
+  border-radius:20px;
+  border:none;
+  text-align:center;
+  font-size:18px;
 }
-
-#lockScreen button {
-  margin-top: 12px;
-  padding: 10px 25px;
-  border: none;
-  border-radius: 25px;
-  background: linear-gradient(45deg, red, pink);
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  box-shadow: 0 0 10px red;
+#lockScreen button{
+  margin-top:10px;
+  padding:10px 25px;
+  border:none;
+  border-radius:20px;
+  background:red;
+  color:white;
+  font-size:16px;
 }
 
 /* Message */
-.message {
-  position: relative;
-  top: 120px;
-  padding: 20px;
-  font-size: 34px;
-  font-weight: bold;
-  text-shadow:
-    0 0 5px #fff,
-    0 0 10px #ff4da6,
-    0 0 20px #ff1a75,
-    0 0 40px #ff0066;
+h1{
+  margin-top:120px;
+  font-size:32px;
+  text-shadow:0 0 20px red,0 0 40px black;
 }
 
-/* Falling Roses */
-.rose {
-  position: fixed;
-  top: -50px;
-  font-size: 24px;
-  animation: fall linear infinite;
-  filter: drop-shadow(0 0 6px red);
+/* Couple Shadow Animation */
+.coupleWrap{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  height:45%;
+  overflow:hidden;
 }
 
-@keyframes fall {
-  to {
-    transform: translateY(110vh);
-  }
+.boy,.girl{
+  position:absolute;
+  bottom:0;
+  font-size:110px;
+  filter:brightness(0) drop-shadow(0 0 20px black);
+}
+
+/* Girl fixed */
+.girl{
+  right:20%;
+}
+
+/* Boy walking */
+.boy{
+  left:-150px;
+  animation:walk 6s linear forwards;
+}
+
+@keyframes walk{
+  0%{left:-150px;}
+  60%{left:45%;}
+  100%{left:47%;}
+}
+
+/* Rose Rain */
+.item{
+  position:absolute;
+  top:-50px;
+  font-size:24px;
+  animation:fall linear infinite;
+}
+@keyframes fall{
+  to{transform:translateY(110vh) rotate(360deg);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- Lock Screen -->
+<!-- LOCK -->
 <div id="lockScreen">
-  <h2 style="color:white;text-shadow:0 0 10px red;">Enter Password 🔒</h2>
-  <input type="password" id="pass" placeholder="Password">
-  <button onclick="unlock()">Open</button>
+  <h2>🔒 Enter Password</h2>
+  <input type="password" id="pass" placeholder="Enter Password">
+  <button onclick="unlock()">Unlock 🌹</button>
+  <p id="error" style="color:red;"></p>
 </div>
 
-<!-- Music -->
-<audio id="music" loop>
-  <source src="music.mp3" type="audio/mp3">
+<!-- MUSIC -->
+<audio id="bgMusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Message -->
-<div class="message">
-  HAPPY ROSE DAY MY MISS 🌹<br><br>
-  Tum mujhe pyaar karo ya na karo,<br>
-  par mera pyaar sirf tumse tha, tumse hai,<br>
-  aur hamesha tumse hi rahega…
+<!-- MESSAGE -->
+<h1 id="text"></h1>
+
+<!-- COUPLE -->
+<div class="coupleWrap">
+  <div class="boy">🧍‍♂️🌹</div>
+  <div class="girl">🧍‍♀️</div>
 </div>
 
 <script>
-/* Password */
-function unlock() {
-  var password = "rose";   // Change password here
-
-  if (document.getElementById("pass").value === password) {
-    document.getElementById("lockScreen").style.display = "none";
-    document.getElementById("music").play();
-  } else {
-    alert("Wrong Password ❌");
+/* PASSWORD */
+var password="rose";
+function unlock(){
+  var p=document.getElementById("pass").value;
+  if(p===password){
+    document.getElementById("lockScreen").style.display="none";
+    document.getElementById("bgMusic").play().catch(()=>{});
+  }else{
+    document.getElementById("error").innerText="Wrong Password!";
   }
 }
 
-/* Falling Roses */
-function createRose() {
-  let rose = document.createElement("div");
-  rose.className = "rose";
-  rose.innerHTML = "🌹";
-
-  rose.style.left = Math.random() * 100 + "vw";
-  rose.style.animationDuration = (3 + Math.random() * 5) + "s";
-  rose.style.fontSize = (18 + Math.random() * 22) + "px";
-
-  document.body.appendChild(rose);
-
-  setTimeout(() => {
-    rose.remove();
-  }, 8000);
+/* MESSAGE TYPING */
+var msg=`HAPPY ROSE DAY MY MISS 🌹
+Tum mujhe pyaar karo ya na karo,
+par mera pyaar sirf tumse tha, tumse hai,
+aur hamesha tumse hi rahega…`;
+var i=0;
+function type(){
+  if(i<msg.length){
+    document.getElementById("text").innerHTML+=msg.charAt(i);
+    i++;
+    setTimeout(type,60);
+  }
 }
+type();
 
-setInterval(createRose, 250);
+/* ROSE RAIN */
+for(let i=0;i<40;i++){
+  let item=document.createElement("div");
+  item.className="item";
+  item.innerHTML="🌹";
+  item.style.left=Math.random()*100+"vw";
+  item.style.animationDuration=(4+Math.random()*5)+"s";
+  item.style.fontSize=(20+Math.random()*25)+"px";
+  document.body.appendChild(item);
+}
 </script>
 
 </body>
